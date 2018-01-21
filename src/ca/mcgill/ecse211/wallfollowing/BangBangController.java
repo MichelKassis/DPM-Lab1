@@ -11,6 +11,7 @@ public class BangBangController implements UltrasonicController {
   private int distance;
   private int filterControl;
   private static final int FILTER_OUT = 20;
+  private final int DELTA = 175;
   
 
   public BangBangController(int bandCenter, int bandwidth, int motorLow, int motorHigh) {
@@ -32,45 +33,46 @@ public class BangBangController implements UltrasonicController {
     
     
     //The implementation instruction is  from the slides on mycources.
-    
+
     if (distance >= 255 && filterControl < FILTER_OUT) {
-        // bad value, do not set the distance var, however do increment the
-        // filter value
-        filterControl++;
-      } else if (distance >= 255) {
-        // We have repeated large values, so there must actually be nothing
-        // there: leave the distance alone
-        this.distance = distance;
-      } else {
-        // distance went below 255: reset filter and leave
-        // distance alone.
-        filterControl = 0;
-        this.distance = distance;
-      }
-    
-    int error = this.distance - (this.bandCenter + bandwidth);	//error in cm
-	if(Math.abs(error) <= this.bandwidth)	    //abs is less than the threshold
-	{										    //robot is in the right direction //just keep moving
-		WallFollowingLab.leftMotor.setSpeed(this.motorHigh);
-		WallFollowingLab.rightMotor.setSpeed(this.motorHigh);
+      // bad value, do not set the distance var, however do increment the
+      // filter value
+      filterControl++;
+    } else if (distance >= 255) {
+      // We have repeated large values, so there must actually be nothing
+      // there: leave the distance alone
+      this.distance = 255;
+    } else {
+      // distance went below 255: reset filter and leave
+      // distance alone.otor
+      filterControl = 0;
+      this.distance = distance;
+    }
+
+	if (this.distance<=(this.bandCenter+bandwidth)&&this.distance>=(this.bandCenter-bandwidth)) {
+		WallFollowingLab.leftMotor.setSpeed(motorHigh);
+		WallFollowingLab.rightMotor.setSpeed(motorHigh);
 		WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.forward();
+	}
+	else if(this.distance<16) {
+		WallFollowingLab.leftMotor.setSpeed(motorHigh);
+		WallFollowingLab.rightMotor.setSpeed(3*motorHigh);
+		WallFollowingLab.leftMotor.backward();
 		WallFollowingLab.rightMotor.forward();
 	}
-	else if(error < 0) 					//robot is too far from the wall
-	{								// increase the rotation of the outside wheel, decrease the location of the inside wheel
-		WallFollowingLab.leftMotor.setSpeed(this.motorHigh*2);	
-		WallFollowingLab.rightMotor.setSpeed(75);	
+	else if(this.distance<this.bandCenter-bandwidth) {
+		WallFollowingLab.leftMotor.setSpeed(motorLow);
+		WallFollowingLab.rightMotor.setSpeed(motorHigh*3);
 		WallFollowingLab.leftMotor.forward();
-		WallFollowingLab.rightMotor.forward();
+	    WallFollowingLab.rightMotor.forward();
 	}
-	else									//the robot is too close to the wall
-	{								// decrease the rotation of the outside wheel, increase the location of the inside wheel
-		WallFollowingLab.leftMotor.setSpeed(75);
-		WallFollowingLab.rightMotor.setSpeed(this.motorHigh*2);
+	else {
+		WallFollowingLab.rightMotor.setSpeed(motorLow);
+		WallFollowingLab.leftMotor.setSpeed(motorHigh*3);
 		WallFollowingLab.leftMotor.forward();
-		WallFollowingLab.rightMotor.forward();
+	    WallFollowingLab.rightMotor.forward();
 	}
-    
     
   }
 
