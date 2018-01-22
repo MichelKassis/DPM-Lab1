@@ -49,29 +49,25 @@ public class BangBangController implements UltrasonicController {
       this.distance = distance;
     }
 
-	if (this.distance<=(this.bandCenter+bandwidth)&&this.distance>=(this.bandCenter-bandwidth)) {
-		WallFollowingLab.leftMotor.setSpeed(motorHigh);
-		WallFollowingLab.rightMotor.setSpeed(motorHigh);
-		WallFollowingLab.leftMotor.forward();
+	int error = this.distance - this.bandCenter;
+	if(Math.abs(error) < this.bandwidth) {
+		WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
+	    WallFollowingLab.rightMotor.setSpeed(motorHigh);
+	    WallFollowingLab.leftMotor.forward();
 	    WallFollowingLab.rightMotor.forward();
 	}
-	else if(this.distance<16) {
-		WallFollowingLab.leftMotor.setSpeed(motorHigh);
-		WallFollowingLab.rightMotor.setSpeed(3*motorHigh);
-		WallFollowingLab.leftMotor.backward();
-		WallFollowingLab.rightMotor.forward();
-	}
-	else if(this.distance<this.bandCenter-bandwidth) {
-		WallFollowingLab.leftMotor.setSpeed(motorLow);
-		WallFollowingLab.rightMotor.setSpeed(motorHigh*3);
-		WallFollowingLab.leftMotor.forward();
+	else if (error < 0 ) {  // the robot is too far from the wall
+		WallFollowingLab.leftMotor.setSpeed(motorHigh*3); 
+	    WallFollowingLab.rightMotor.setSpeed(motorLow);
+	    WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.backward();
+		
+	}else if(error > 0) {   // the robot is close to the world
+		WallFollowingLab.leftMotor.setSpeed(motorLow); 
+	    WallFollowingLab.rightMotor.setSpeed(motorHigh);
+	    WallFollowingLab.leftMotor.forward();
 	    WallFollowingLab.rightMotor.forward();
-	}
-	else {
-		WallFollowingLab.rightMotor.setSpeed(motorLow);
-		WallFollowingLab.leftMotor.setSpeed(motorHigh*3);
-		WallFollowingLab.leftMotor.forward();
-	    WallFollowingLab.rightMotor.forward();
+		
 	}
     
   }
