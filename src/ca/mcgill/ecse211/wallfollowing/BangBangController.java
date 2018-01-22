@@ -51,21 +51,25 @@ public class BangBangController implements UltrasonicController {
 
 	int error = this.distance - this.bandCenter;
 	if(Math.abs(error) < this.bandwidth) {
-	    motionHelper(this.motorHigh,this.motorHigh);
+	    motionHelper(this.motorHigh,this.motorHigh,false);
 	}
 	else if (error < 0 ) {  // the robot is too far from the wall
-	    motionHelper(this.motorHigh*3,this.motorLow);	
+	    motionHelper(this.motorHigh*3,this.motorLow,true);	
 	}else if(error > 0) {   // the robot is close to the world
-	    motionHelper(this.motorLow,this.motorHigh);
+	    motionHelper(this.motorLow,this.motorHigh,false);		
 	}
     
   }
   
-  public static void motionHelper(int high, int  low) {
+  public static void motionHelper(int high, int  low, boolean t) {
 	  WallFollowingLab.leftMotor.setSpeed(high); // Start robot moving forward
 	    WallFollowingLab.rightMotor.setSpeed(low);
 	    WallFollowingLab.leftMotor.forward();
-	    WallFollowingLab.rightMotor.forward();
+	    if(t)  
+	       WallFollowingLab.rightMotor.backward();
+	    else
+	      WallFollowingLab.rightMotor.forward();
+	    	  
   }
 
   @Override
