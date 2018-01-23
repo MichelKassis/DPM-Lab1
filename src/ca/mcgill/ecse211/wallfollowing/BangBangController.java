@@ -58,9 +58,8 @@ public class BangBangController implements UltrasonicController {
 	    WallFollowingLab.rightMotor.forward();
 	}
 	else if (error < 0 ) {  // the robot is too far from the wall
-		//WallFollowingLab.rightMotor.stop();
 		WallFollowingLab.leftMotor.setSpeed(motorHigh*3); 
-	    WallFollowingLab.rightMotor.setSpeed(motorLow+motorLow/2);
+	    WallFollowingLab.rightMotor.setSpeed(motorLow *3);
 	    WallFollowingLab.leftMotor.forward();
 	    WallFollowingLab.rightMotor.backward();
 		
