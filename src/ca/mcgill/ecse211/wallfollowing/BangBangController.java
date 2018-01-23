@@ -71,7 +71,7 @@ public class BangBangController implements UltrasonicController {
 	    WallFollowingLab.rightMotor.forward();	
 	}
 	  
-	else if (distError> 5){ //when its too close go back
+	else if (error> 5){ //when its too close go back
 			WallFollowingLab.rightMotor.setSpeed(500);
 			WallFollowingLab.leftMotor.setSpeed(500);
 			WallFollowingLab.leftMotor.backward();
