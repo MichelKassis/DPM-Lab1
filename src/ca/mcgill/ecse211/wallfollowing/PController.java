@@ -12,6 +12,9 @@ public class PController implements UltrasonicController {
   private final int bandWidth;
   private int distance;
   private int filterControl;
+  public static int distError = 0;
+  public static final int MAXDIST = 200;
+  private static final double RIGHT_MOTOR_SPEED = 250; 
 
   public PController(int bandCenter, int bandwidth) {
     this.bandCenter = bandCenter;
@@ -48,34 +51,42 @@ public class PController implements UltrasonicController {
     }
 
     // TODO: process a movement based on the us distance passed in (P style)
-    int errorMultiplier = 3;
+    int correction;
+  /*  correction = (int) (1.0 * (double) diff);
+    if (correction >= FWDSPEED) { //fwdspeed 100
+      correction = MAXCORRECTION; //maxcorrection 50
+    }
+    */
+   // correction = (int)(1.0*)
+    int errorMultiplier= 4;
     int errorCorrection= errorMultiplier*Math.abs(this.distance-this.bandCenter);
     if (errorCorrection>200) errorCorrection=200;
-    if (this.distance<=(this.bandCenter+this.bandWidth) && this.distance>=(this.bandCenter-this.bandWidth)) {
-    	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);	
-    	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
-    	WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();
-    }
-    else if(this.distance < 20) {
-    	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED*2);
-    	WallFollowingLab.rightMotor.setSpeed((int)(2.5*(MOTOR_SPEED)));
-    	WallFollowingLab.leftMotor.backward();
-    	WallFollowingLab.rightMotor.forward();
-    	
-    }
-    else if (this.distance<this.bandCenter-this.bandWidth) {
-    	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED-errorCorrection/(errorMultiplier));
-    	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED+errorCorrection);
-    	WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();
-    }
-    else {
-    	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED-errorCorrection/(errorMultiplier));
-    	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED+errorCorrection);
-    	WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();
-    }
+    if (this.distance<=(this.bandCenter+this.bandWidth)&&this.distance>=(this.bandCenter-this.bandWidth)) {
+        WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);    
+        WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
+        WallFollowingLab.leftMotor.forward();
+      WallFollowingLab.rightMotor.forward();
+  }
+  else if(this.distance<20) {
+  	
+  	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
+  	WallFollowingLab.rightMotor.setSpeed((int)(2.5*RIGHT_MOTOR_SPEED));
+  	WallFollowingLab.leftMotor.backward();
+  	WallFollowingLab.rightMotor.forward();
+  	
+  }
+  else if (this.distance<this.bandCenter-this.bandWidth) {
+  	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED-errorCorrection/(errorMultiplier));
+  	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED+errorCorrection);
+  	WallFollowingLab.leftMotor.forward();
+      WallFollowingLab.rightMotor.forward();
+  }
+  else {
+  	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED-errorCorrection/(errorMultiplier));
+  	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED+errorCorrection);
+  	WallFollowingLab.leftMotor.forward();
+      WallFollowingLab.rightMotor.forward();
+  }
   }
 
 

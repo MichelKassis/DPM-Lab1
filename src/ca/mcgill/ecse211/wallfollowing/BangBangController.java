@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.wallfollowing;
 
 import lejos.hardware.motor.*;
 
+
 public class BangBangController implements UltrasonicController {
 
   private final int bandCenter;
@@ -51,25 +52,26 @@ public class BangBangController implements UltrasonicController {
 
 	int error = this.distance - this.bandCenter;
 	if(Math.abs(error) < this.bandwidth) {
-	    motionHelper(this.motorHigh,this.motorHigh,false);
+		WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
+	    WallFollowingLab.rightMotor.setSpeed(motorHigh);
+	    WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.forward();
 	}
 	else if (error < 0 ) {  // the robot is too far from the wall
-	    motionHelper(this.motorHigh*3,this.motorLow,true);	
+		//WallFollowingLab.rightMotor.stop();
+		WallFollowingLab.leftMotor.setSpeed(motorHigh*3); 
+	    WallFollowingLab.rightMotor.setSpeed(motorLow+motorLow/2);
+	    WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.backward();
+		
 	}else if(error > 0) {   // the robot is close to the world
-	    motionHelper(this.motorLow,this.motorHigh,false);		
+		//WallFollowingLab.leftMotor.
+		WallFollowingLab.leftMotor.setSpeed(motorLow); 
+	    WallFollowingLab.rightMotor.setSpeed(motorHigh);
+	    WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.forward();	
 	}
     
-  }
-  
-  public static void motionHelper(int high, int  low, boolean t) {
-	  WallFollowingLab.leftMotor.setSpeed(high); // Start robot moving forward
-	    WallFollowingLab.rightMotor.setSpeed(low);
-	    WallFollowingLab.leftMotor.forward();
-	    if(t)  
-	       WallFollowingLab.rightMotor.backward();
-	    else
-	      WallFollowingLab.rightMotor.forward();
-	    	  
   }
 
   @Override
