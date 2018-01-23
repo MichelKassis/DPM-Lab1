@@ -81,6 +81,13 @@ public class PController implements UltrasonicController {
   	WallFollowingLab.leftMotor.forward();
       WallFollowingLab.rightMotor.forward();
   }
+    
+  else if (this.distance<this.bandCenter-this.bandWidth -5){ //when its too close go back		
+		WallFollowingLab.rightMotor.setSpeed(500);		
+		WallFollowingLab.leftMotor.setSpeed(500);		
+ 	  WallFollowingLab.leftMotor.backward();		
+ 	  WallFollowingLab.rightMotor.backward();		
+ 	}
   else {
   	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED-errorCorrection/(errorMultiplier));
   	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED+errorCorrection);
